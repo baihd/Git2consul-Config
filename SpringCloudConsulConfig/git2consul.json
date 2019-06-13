@@ -22,7 +22,8 @@
       //分支信息是否包含到请求中，建议使用
       "include_branch_name": true,
       "branches": [
-        "master"
+        //分支名称
+        "dev"
       ],
       "hooks": [
         {

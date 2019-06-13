@@ -3,19 +3,37 @@ server:
 spring:
   application:
     name: consul-config
+  profiles:
+    active: dev
   cloud:
     consul:
       host: 127.0.0.1
       port: 8500
       config:
-        #开启Consul配置
+        # 开启Consul配置
         enabled: true
-        #consul上面文件的格式
-        format: properties
-        #表示consul配置的文件夹前缀
-        prefix: config
-        #表示consul配置的配置文件父路径
-        default-context: ${spring.application.name}
-        #表示consul配置的配置文件名
-        data-key: consul-config.properties
-        #以上配置在consul的key为:config/consul-config/consul-config.properties
+        # consul上面文件的格式，files:会尝试遍历符合条件的文件去拉去信息
+        format: files
+        watch:
+          # 开启配置观察集
+          enabled: true
+        # 对应consul KVs上的路径，启动时会在这个路径下拉起符合条件的信息
+        # ${spring.application.name}对应git2consul.json repos中的根目录名称
+        # ${spring.profiles.active}对应git2consul.json repos中的分支名称
+        # 表示consul配置的文件夹前缀
+        prefix: ${spring.application.name}/${spring.profiles.active}
+      discovery:
+        # 配置实例命名规则
+        instance-id: ${spring.application.name}:${spring.cloud.consul.discovery.hostname}:${server.port}
+        hostname: 127.0.0.1
+        # 健康检测的url，如果不配置，健康检测一定失败
+        health-check-path: /actuator/health
+        health-check-interval: 10s
+        # 启用服务发现
+        enabled: true
+        # 作为一个服务注册到consul
+        register: true
+        # 在注册时使用Ip地址而不是使用hostname
+        prefer-ip-address: true
+        # 在consul中注册健康
+        register-health-check: true
