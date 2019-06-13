@@ -3,6 +3,8 @@ server:
 spring:
   application:
     name: consul-config
+  profiles:
+    active: master
   cloud:
     consul:
       host: 127.0.0.1
@@ -10,12 +12,30 @@ spring:
       config:
         #开启Consul配置
         enabled: true
+        watch:
+          # 开启配置观察集
+          enabled: true
         #consul上面文件的格式
         format: properties
         #表示consul配置的文件夹前缀
-        prefix: config
+        prefix: ${spring.application.name}
         #表示consul配置的配置文件父路径
-        default-context: ${spring.application.name}
+        default-context: ${spring.profiles.active}
         #表示consul配置的配置文件名
         data-key: consul-config.properties
-        #以上配置在consul的key为:config/consul-config/consul-config.properties
+        #以上配置在consul的key为:consul-config/master/consul-config.properties
+      discovery:
+        # 配置实例命名规则
+        instance-id: ${spring.application.name}:${spring.cloud.consul.discovery.hostname}:${server.port}
+        hostname: 127.0.0.1
+        # 健康检测的url，如果不配置，健康检测一定失败
+        health-check-path: /actuator/health
+        health-check-interval: 10s
+        # 启用服务发现
+        enabled: true
+        # 作为一个服务注册到consul
+        register: true
+        # 在注册时使用Ip地址而不是使用hostname
+        prefer-ip-address: true
+        # 在consul中注册健康
+        register-health-check: true
