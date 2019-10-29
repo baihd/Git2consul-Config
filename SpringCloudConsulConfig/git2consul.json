@@ -1,7 +1,7 @@
 {
   "version": "1.0",
   //本地仓库备份地址
-  "local_store": "/opt/soft/git2consul",
+  "local_store": "/home/baihd/logs",
   "logger": {
     "name": "log",
     "streams": [
@@ -9,7 +9,7 @@
         "level": "trace",
         "type": "rotating-file",
         //生成日志路径
-        "path": "/opt/soft/logs/git2consul.log"
+        "path": "/home/baihd/logs/git2consul.log"
       }
     ]
   },
